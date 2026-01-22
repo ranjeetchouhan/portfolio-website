@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranjeet Chouhan | Android Engineer</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../switcher.css">
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent: #3DDC84;
+            /* Android Green */
+            --accent-glow: rgba(61, 220, 132, 0.3);
+            --surface: #121212;
+            --surface-light: #1E1E1E;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* --- Custom Scrollbar --- */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 10px;
+        }
+
+        /* --- Device Frame CSS --- */
+        .device-container {
+            perspective: 1000px;
+        }
+
+        .phone-mockup {
+            width: 340px;
+            height: 700px;
+            border: 14px solid #1a1a1a;
+            border-radius: 40px;
+            background: #000;
+            position: relative;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7), 0 0 0 2px #333;
+            overflow: hidden;
+            transform: rotateY(-5deg) rotateX(5deg);
+            transition: transform 0.5s ease;
+            margin: 0 auto;
+        }
+
+        .phone-mockup:hover {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+            box-shadow: 0 60px 120px -20px rgba(61, 220, 132, 0.2), 0 0 0 2px var(--accent);
+        }
+
+        /* Notch */
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1a1a1a;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
+
+        /* Screen Content (Play Store Look) */
+        .screen {
+            background: #131313;
+            height: 100%;
+            width: 100%;
+            overflow-y: hidden;
+            /* Manage scroll internally */
+            position: relative;
+            padding-top: 35px;
+            /* Space for status bar */
+        }
+
+        /* Pages inside screen */
+        .page {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 35px);
+            overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: #131313;
+            padding-bottom: 60px;
+            /* Space for bottom nav */
+        }
+
+        .page::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        /* Navigation Transitions */
+        .page-home {
+            z-index: 10;
+            transform: translateX(0);
+        }
+
+        .page-detail {
+            z-index: 20;
+            transform: translateX(100%);
+        }
+
+        .page-detail.active {
+            transform: translateX(0);
+        }
+
+        /* Play Store Card */
+        .app-card {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .app-card:hover {
+            background: #1E1E1E;
+        }
+
+        .app-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        .install-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+            transition: all 0.2s;
+        }
+
+        .install-btn:hover {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        /* Detail View Styling */
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .chip {
+            font-size: 10px;
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #ccc;
+        }
+
+        /* --- Timeline Styling --- */
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+        }
+
+        /* --- Typing Effect --- */
+        .typewriter span {
+            border-right: 2px solid var(--accent);
+            animation: blink 1s step-end infinite;
+        }
+
+        @keyframes blink {
+            50% {
+                border-color: transparent;
+            }
+        }
+
+        /* --- Background Particles --- */
+        .blob {
+            position: fixed;
+            filter: blur(80px);
+            z-index: -1;
+            opacity: 0.4;
+            animation: float 10s infinite alternate;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            100% {
+                transform: translate(20px, 40px);
+            }
+        }
+    </style>
+</head>
+
+<body class="selection:bg-green-500 selection:text-black">
+
+    <!-- Background Ambience -->
+    <div class="blob bg-green-500 w-64 h-64 rounded-full top-0 left-0"></div>
+    <div class="blob bg-purple-600 w-80 h-80 rounded-full bottom-0 right-0 animation-delay-2000"></div>
+
+    <div class="max-w-7xl mx-auto px-6 py-12 md:py-20">
+
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+
+            <!-- LEFT COLUMN: Content -->
+            <div class="space-y-16">
+
+                <!-- Hero Section -->
+                <section data-aos="fade-up" data-aos-duration="1000">
+                    <div class="flex items-center gap-3 mb-6">
+                        <span
+                            class="px-3 py-1 rounded-full border border-green-500/30 bg-green-500/10 text-green-400 text-xs font-bold tracking-widest uppercase flex items-center gap-2">
+                            <i class="fab fa-android"></i>
+                            <span class="typewriter">Android SDE II<span></span></span>
+                        </span>
+                        <span class="text-xs text-gray-500 font-mono"><i class="fas fa-map-marker-alt"></i>
+                            Bengaluru</span>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
+                        Crafting <span class="text-[#3DDC84]">Silky Smooth</span> Experiences.
+                    </h1>
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-lg mb-8">
+                        Hi, I'm <strong>Ranjeet Chouhan</strong>. I engineer high-performance Android applications using
+                        Jetpack Compose, Clean Architecture, and a pixel-perfect obsession.
+                    </p>
+
+                    <!-- Tech Stack Chips -->
+                    <div class="flex flex-wrap gap-3">
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a] rounded-lg text-sm text-gray-300 border border-white/5 hover:border-green-500/50 transition-colors cursor-default">Kotlin</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a] rounded-lg text-sm text-gray-300 border border-white/5 hover:border-green-500/50 transition-colors cursor-default">Jetpack
+                            Compose</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a] rounded-lg text-sm text-gray-300 border border-white/5 hover:border-green-500/50 transition-colors cursor-default">Hilt</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a] rounded-lg text-sm text-gray-300 border border-white/5 hover:border-green-500/50 transition-colors cursor-default">MQTT</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a] rounded-lg text-sm text-gray-300 border border-white/5 hover:border-green-500/50 transition-colors cursor-default">BLE</span>
+                    </div>
+                </section>
+
+                <!-- Experience Timeline -->
+                <section data-aos="fade-up" data-aos-delay="200">
+                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                        <span class="w-8 h-1 bg-green-500 rounded-full"></span> Experience
+                    </h2>
+
+                    <div class="relative pl-12 space-y-12">
+                        <div class="timeline-line"></div>
+
+                        <!-- Porter -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-green-500 border-4 border-black group-hover:scale-125 transition-transform">
+                            </div>
+                            <h3 class="text-xl font-bold text-white">SDE II @ Porter</h3>
+                            <p class="text-sm text-green-400 font-mono mb-2">2025 - Present</p>
+                            <p class="text-gray-400 text-sm">
+                                Owning notification delivery (MQTT) & building "Accept Order" flows with Compose & RIBs.
+                            </p>
+                        </div>
+
+                        <!-- Sunday Labs -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-gray-600 border-4 border-black group-hover:scale-125 transition-transform">
+                            </div>
+                            <h3 class="text-xl font-bold text-white">SDE II @ Sunday Labs</h3>
+                            <p class="text-sm text-gray-500 font-mono mb-2">2024 - 2025</p>
+                            <p class="text-gray-400 text-sm">
+                                Increased notification delivery to 92%. Built Android Studio plugins for team
+                                productivity.
+                            </p>
+                        </div>
+
+                        <!-- Fourth Frontier -->
+                        <div class="relative group">
+                            <div
+                                class="absolute -left-[31px] top-1 w-4 h-4 rounded-full bg-gray-600 border-4 border-black group-hover:scale-125 transition-transform">
+                            </div>
+                            <h3 class="text-xl font-bold text-white">Android Dev @ Fourth Frontier</h3>
+                            <p class="text-sm text-gray-500 font-mono mb-2">2023 - 2024</p>
+                            <p class="text-gray-400 text-sm">
+                                Built "Frontier Pulse" from scratch. Deep dive into BLE communication and Clean
+                                Architecture.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Education & Awards (New Section) -->
+                <section data-aos="fade-up" data-aos-delay="300" class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-graduation-cap text-gray-500"></i> Education
+                        </h2>
+                        <div class="bg-[#1a1a1a] p-4 rounded-xl border border-white/5">
+                            <h3 class="font-bold">Rajasthan Technical University</h3>
+                            <p class="text-sm text-gray-400">B.Tech Computer Science</p>
+                            <p class="text-xs text-gray-500 mt-1">2015 - 2019</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-trophy text-yellow-500"></i> Honors
+                        </h2>
+                        <ul class="space-y-3">
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span>Mentor, UNESCO-India-Africa Hackathon '22</span>
+                            </li>
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span>Chairperson, ACM Student Chapter</span>
+                            </li>
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-green-500 mt-1"></i>
+                                <span>Smart India Hackathon Participant</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+                <!-- Contact CTA -->
+                <section data-aos="zoom-in">
+                    <a href="mailto:ranuluhar@gmail.com"
+                        class="block bg-gradient-to-r from-[#1a1a1a] to-[#222] border border-white/10 p-8 rounded-2xl hover:border-green-500/50 transition-all group">
+                        <div class="flex justify-between items-center">
+                            <div>
+                                <h3 class="text-2xl font-bold mb-1 group-hover:text-green-400 transition-colors">Let's
+                                    work together</h3>
+                                <p class="text-gray-500">ranuluhar@gmail.com</p>
+                            </div>
+                            <div
+                                class="w-12 h-12 bg-white/5 rounded-full flex items-center justify-center group-hover:bg-green-500 group-hover:text-black transition-all">
+                                <i class="fas fa-arrow-right"></i>
+                            </div>
+                        </div>
+                    </a>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Sticky Device Frame -->
+            <div class="hidden lg:block sticky top-10 h-screen flex items-center justify-center device-container">
+
+                <!-- Phone Frame -->
+                <div class="phone-mockup" data-aos="fade-left" data-aos-duration="1200">
+
+                    <!-- Screen Container -->
+                    <div class="screen">
+
+                        <!-- Simulated Status Bar -->
+                        <div
+                            class="absolute top-0 w-full flex justify-between px-6 py-2 text-[10px] text-gray-400 font-medium z-50">
+                            <span>12:30</span>
+                            <div class="flex gap-1">
+                                <i class="fas fa-wifi"></i>
+                                <i class="fas fa-battery-full"></i>
+                            </div>
+                        </div>
+
+                        <!-- PAGE 1: HOME (App Store List) -->
+                        <div class="page page-home" id="pageHome">
+                            <!-- Play Store Header -->
+                            <div class="px-5 mb-4 pt-4">
+                                <div
+                                    class="bg-[#2A2A2A] rounded-full px-4 py-2 flex items-center gap-3 text-gray-400 text-sm shadow-md">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search apps...</span>
+                                    <div
+                                        class="ml-auto w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">
+                                        R</div>
+                                </div>
+                            </div>
+
+                            <!-- Featured Section -->
+                            <div class="px-5 mb-6">
+                                <h4 class="text-white font-semibold mb-3 text-sm">My Projects</h4>
+
+                                <!-- App Card: Frontier -->
+                                <div class="app-card" onclick="openApp('frontier')">
+                                    <div class="app-icon bg-gradient-to-br from-red-500 to-orange-600">
+                                        <i class="fas fa-heartbeat text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Frontier X Link</div>
+                                        <div class="text-xs text-gray-500">Health • 4.8 <i
+                                                class="fas fa-star text-[10px]"></i></div>
+                                        <button class="install-btn">View Details</button>
+                                    </div>
+                                </div>
+
+                                <!-- App Card: Gymcatch -->
+                                <div class="app-card" onclick="openApp('gymcatch')">
+                                    <div class="app-icon bg-gradient-to-br from-blue-500 to-cyan-500">
+                                        <i class="fas fa-dumbbell text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Gymcatch</div>
+                                        <div class="text-xs text-gray-500">Booking • 4.6 <i
+                                                class="fas fa-star text-[10px]"></i></div>
+                                        <button class="install-btn">Update</button>
+                                    </div>
+                                </div>
+
+                                <!-- App Card: Car Rescue -->
+                                <div class="app-card" onclick="openApp('carrescue')">
+                                    <div class="app-icon bg-gradient-to-br from-yellow-500 to-amber-600">
+                                        <i class="fas fa-car-crash text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Car Rescue</div>
+                                        <div class="text-xs text-gray-500">Navigation • Geofencing</div>
+                                        <button class="install-btn">Install</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Project (Porter) -->
+                            <div class="px-5 mb-6" onclick="openApp('porter')">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="text-white font-semibold text-sm">Current Role</h4>
+                                    <span
+                                        class="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded">Installed</span>
+                                </div>
+                                <div
+                                    class="bg-[#1E1E1E] rounded-xl p-4 shadow-lg cursor-pointer hover:bg-[#252525] transition-colors">
+                                    <div
+                                        class="w-full h-24 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fas fa-truck text-3xl text-white/80"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-200">Porter Driver App</div>
+                                    <div class="text-xs text-gray-500 mt-1 mb-3">
+                                        Enterprise Logistics app. Powered by MQTT & Compose.
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="flex-1 bg-[#3DDC84] text-black text-xs font-bold py-2 rounded-full">Open</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGE 2: APP DETAIL (Dynamic Content) -->
+                        <div class="page page-detail" id="pageDetail">
+                            <div
+                                class="sticky top-0 bg-[#131313]/90 backdrop-blur z-10 px-4 py-3 flex items-center gap-4 border-b border-white/5">
+                                <button onclick="closeApp()" class="text-white hover:text-green-400"><i
+                                        class="fas fa-arrow-left"></i></button>
+                                <span class="text-sm font-bold">App Details</span>
+                            </div>
+
+                            <div class="p-5">
+                                <!-- Dynamic Header -->
+                                <div class="flex gap-4 mb-6">
+                                    <div id="detailIcon"
+                                        class="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                                    </div>
+                                    <div class="flex-1">
+                                        <h2 id="detailTitle" class="text-xl font-bold leading-tight"></h2>
+                                        <p id="detailSubtitle" class="text-xs text-green-400 mt-1"></p>
+                                        <div class="flex gap-2 mt-3">
+                                            <button
+                                                class="bg-[#3DDC84] text-black px-4 py-1 rounded-full text-xs font-bold flex-1">Open</button>
+                                            <button class="bg-[#333] px-3 py-1 rounded-full text-xs"><i
+                                                    class="fas fa-share"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Tech Stats -->
+                                <div class="grid grid-cols-3 gap-2 mb-6 text-center">
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Downloads</p>
+                                        <p class="font-bold text-sm">1M+</p>
+                                    </div>
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Rating</p>
+                                        <p class="font-bold text-sm">4.8 <i class="fas fa-star text-[8px]"></i></p>
+                                    </div>
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Size</p>
+                                        <p class="font-bold text-sm">24 MB</p>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Description -->
+                                <h3 class="font-bold text-sm mb-2">About this app</h3>
+                                <p id="detailDesc" class="text-xs text-gray-400 leading-relaxed mb-6"></p>
+
+                                <!-- Tech Stack -->
+                                <h3 class="font-bold text-sm mb-3">Tech Stack & Libraries</h3>
+                                <div id="detailTags" class="flex flex-wrap gap-2"></div>
+
+                            </div>
+                        </div>
+
+                        <!-- Footer Navigation -->
+                        <div
+                            class="absolute bottom-0 w-full bg-[#131313] border-t border-white/5 py-3 px-6 flex justify-between items-center z-50">
+                            <div class="flex flex-col items-center gap-1 text-[#3DDC84]">
+                                <i class="fas fa-gamepad text-lg"></i>
+                                <span class="text-[10px]">Games</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1 text-gray-500">
+                                <i class="fas fa-layer-group text-lg"></i>
+                                <span class="text-[10px]">Apps</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1 text-gray-500">
+                                <i class="fas fa-search text-lg"></i>
+                                <span class="text-[10px]">Search</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Floating Badge -->
+                <div
+                    class="absolute -right-10 bottom-20 bg-[#1a1a1a] p-4 rounded-xl border border-white/10 shadow-2xl animate-bounce hidden xl:block">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-check-circle text-blue-500"></i>
+                        <span class="text-xs text-gray-400">Verified Developer</span>
+                    </div>
+                    <p class="text-xl font-bold text-white">4+ Years Exp.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        // App Data Object
+        const apps = {
+            frontier: {
+                title: "Frontier X Link",
+                subtitle: "Fourth Frontier Technologies",
+                desc: "A revolutionary health monitoring app connecting to the Frontier X device via BLE. Features real-time ECG streaming, cardiac strain analysis, and AWS Cognito integration for secure data handling.",
+                iconClass: "bg-gradient-to-br from-red-500 to-orange-600",
+                iconHtml: '<i class="fas fa-heartbeat text-white"></i>',
+                tags: ["Kotlin", "Bluetooth LE", "Clean Arch", "Hilt", "AWS Cognito", "MPAndroidChart"]
+            },
+            gymcatch: {
+                title: "Gymcatch",
+                subtitle: "Fitness Booking System",
+                desc: "Comprehensive fitness management app. Users can find classes, book sessions, and sync schedules. Built with a robust offline-first architecture using Room Database.",
+                iconClass: "bg-gradient-to-br from-blue-500 to-cyan-500",
+                iconHtml: '<i class="fas fa-dumbbell text-white"></i>',
+                tags: ["MVVM", "Room DB", "Coroutines", "Mockk", "Calendar API"]
+            },
+            carrescue: {
+                title: "Car Rescue",
+                subtitle: "Emergency Assistance",
+                desc: "Geo-location based emergency app. Connects users within a 50km radius for help. Features real-time navigation using Google Maps SDK and in-app chat via Firebase.",
+                iconClass: "bg-gradient-to-br from-yellow-500 to-amber-600",
+                iconHtml: '<i class="fas fa-car-crash text-white"></i>',
+                tags: ["Google Maps SDK", "Firebase Realtime DB", "Geofencing", "Retrofit"]
+            },
+            porter: {
+                title: "Porter Driver App",
+                subtitle: "Enterprise Logistics",
+                desc: "The backbone of Porter's logistics network. Handles high-frequency order dispatching using MQTT. Recently refactored to use Jetpack Compose and RIBs architecture for modularity.",
+                iconClass: "bg-gradient-to-r from-purple-600 to-indigo-600",
+                iconHtml: '<i class="fas fa-truck text-white"></i>',
+                tags: ["Jetpack Compose", "MQTT", "RIBs Architecture", "Observability", "Modularization"]
+            }
+        };
+
+        // App Navigation Logic
+        function openApp(appId) {
+            const app = apps[appId];
+            if (!app) return;
+
+            // Populate Data
+            document.getElementById('detailTitle').innerText = app.title;
+            document.getElementById('detailSubtitle').innerText = app.subtitle;
+            document.getElementById('detailDesc').innerText = app.desc;
+
+            // Set Icon
+            const iconContainer = document.getElementById('detailIcon');
+            iconContainer.className = `w-20 h-20 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg ${app.iconClass}`;
+            iconContainer.innerHTML = app.iconHtml;
+
+            // Set Tags
+            const tagsContainer = document.getElementById('detailTags');
+            tagsContainer.innerHTML = app.tags.map(tag => `<span class="chip">${tag}</span>`).join('');
+
+            // Animate
+            document.getElementById('pageDetail').classList.add('active');
+        }
+
+        function closeApp() {
+            document.getElementById('pageDetail').classList.remove('active');
+        }
+    </script>
+    <script src="../switcher.js"></script>
+</body>
+
+</html>
