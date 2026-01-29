@@ -12,6 +12,8 @@
         rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../switcher.css">
+    <script src="../analytics.js"></script>
 
     <style>
         :root {
@@ -214,6 +216,7 @@
 
                 <div class="flex gap-3 mt-8 relative z-10">
                     <a href="mailto:ranuluhar@gmail.com"
+                        onclick="if(window.trackEvent) trackEvent('contact_me_click', { version: 'v2' })"
                         class="bg-white text-black px-6 py-3 rounded-full font-bold hover:bg-gray-200 transition-colors flex items-center gap-2">
                         <i class="fas fa-paper-plane"></i> Contact Me
                     </a>
@@ -392,6 +395,8 @@
 
         </div>
     </main>
+    <script src="switcher.js"></script>
+    <script src="../switcher.js"></script>
 </body>
 
 </html>

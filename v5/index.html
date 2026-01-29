@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ranjeet Chouhan | Android Engineer</title>
+
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;700;900&family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400&display=swap"
+        rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link rel="stylesheet" href="../switcher.css">
+    <script src="../analytics.js"></script>
+
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent: #3DDC84;
+            /* Android Green */
+            --accent-glow: rgba(61, 220, 132, 0.4);
+            --surface: #121212;
+            --text-main: #ffffff;
+            --text-sub: #9ca3af;
+        }
+
+        /* --- Developer Mode Theme Override --- */
+        body.dev-mode {
+            --accent: #FF00FF;
+            /* Magenta for Debug Mode */
+            --accent-glow: rgba(255, 0, 255, 0.5);
+            --bg-dark: #000000;
+        }
+
+        body.dev-mode .debug-overlay {
+            display: block !important;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            overflow-x: hidden;
+            position: relative;
+            transition: background-color 0.5s ease;
+        }
+
+        /* --- Creative Backgrounds --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .code-particle {
+            position: fixed;
+            color: rgba(61, 220, 132, 0.15);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 14px;
+            user-select: none;
+            z-index: -1;
+            pointer-events: none;
+            animation: floatUp linear infinite;
+        }
+
+        body.dev-mode .code-particle {
+            color: rgba(255, 0, 255, 0.3);
+            /* Pink in dev mode */
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) rotate(0deg);
+                opacity: 0;
+            }
+
+            20% {
+                opacity: 0.8;
+            }
+
+            80% {
+                opacity: 0.8;
+            }
+
+            100% {
+                transform: translateY(-10vh) rotate(20deg);
+                opacity: 0;
+            }
+        }
+
+        /* --- Typography & Editable Fields --- */
+        h1,
+        h2,
+        h3,
+        .font-heading {
+            font-family: 'Outfit', sans-serif;
+        }
+
+        .font-mono {
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        [contenteditable="true"] {
+            outline: none;
+            border-bottom: 1px dashed rgba(255, 255, 255, 0.2);
+            transition: border-color 0.3s;
+        }
+
+        [contenteditable="true"]:focus {
+            border-bottom: 1px dashed var(--accent);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        /* --- Android Robot Animation --- */
+        .android-mascot {
+            width: 80px;
+            height: 80px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            /* Faster for click response */
+            animation: floatMascot 3s ease-in-out infinite;
+            position: relative;
+            z-index: 50;
+        }
+
+        .android-mascot:active {
+            transform: scale(0.85) !important;
+            /* Tactile click feel */
+        }
+
+        @keyframes floatMascot {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .eye-ball {
+            transition: transform 0.1s;
+        }
+
+        .android-mascot:hover .left-arm {
+            animation: wave 0.5s ease-in-out infinite;
+            transform-origin: 20px 35px;
+        }
+
+        .android-mascot:hover .antenna-left {
+            animation: twitch 0.2s infinite;
+        }
+
+        .android-mascot:hover .antenna-right {
+            animation: twitch 0.2s 0.1s infinite;
+        }
+
+        /* --- Click Hint Badge --- */
+        .click-hint {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--accent);
+            color: black;
+            font-size: 11px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            opacity: 0;
+            transition: opacity 0.3s, transform 0.3s;
+            pointer-events: none;
+            white-space: nowrap;
+            box-shadow: 0 4px 10px var(--accent-glow);
+        }
+
+        .click-hint::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 4px solid transparent;
+            border-right: 4px solid transparent;
+            border-top: 4px solid var(--accent);
+        }
+
+        .android-mascot:hover .click-hint {
+            opacity: 1;
+            animation: bounceHint 1s infinite;
+        }
+
+        @keyframes bounceHint {
+
+            0%,
+            100% {
+                transform: translateX(-50%) translateY(0);
+            }
+
+            50% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+
+        @keyframes wave {
+
+            0%,
+            100% {
+                transform: rotate(0deg);
+            }
+
+            50% {
+                transform: rotate(160deg);
+            }
+        }
+
+        @keyframes twitch {
+
+            0%,
+            100% {
+                transform: rotate(-30deg);
+            }
+
+            50% {
+                transform: rotate(-20deg);
+            }
+        }
+
+        /* --- Device Frame CSS --- */
+        .device-container {
+            perspective: 1000px;
+        }
+
+        .phone-mockup {
+            width: 340px;
+            height: 700px;
+            border: 14px solid #1a1a1a;
+            border-radius: 40px;
+            background: #000;
+            position: relative;
+            box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.7), 0 0 0 2px #333;
+            overflow: hidden;
+            transform: rotateY(-5deg) rotateX(5deg);
+            transition: transform 0.5s ease;
+            margin: 0 auto;
+        }
+
+        .phone-mockup:hover {
+            transform: rotateY(0deg) rotateX(0deg) scale(1.02);
+            box-shadow: 0 60px 120px -20px var(--accent-glow), 0 0 0 2px var(--accent);
+        }
+
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 120px;
+            height: 25px;
+            background: #1a1a1a;
+            border-bottom-left-radius: 16px;
+            border-bottom-right-radius: 16px;
+            z-index: 20;
+        }
+
+        .screen {
+            background: #131313;
+            height: 100%;
+            width: 100%;
+            overflow-y: hidden;
+            position: relative;
+            padding-top: 35px;
+        }
+
+        .page {
+            position: absolute;
+            top: 35px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 35px);
+            overflow-y: auto;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            background: #131313;
+            padding-bottom: 60px;
+        }
+
+        .page::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .page-home {
+            z-index: 10;
+            transform: translateX(0);
+        }
+
+        .page-detail {
+            z-index: 20;
+            transform: translateX(100%);
+        }
+
+        .page-detail.active {
+            transform: translateX(0);
+        }
+
+        .app-card {
+            display: flex;
+            gap: 12px;
+            padding: 16px;
+            transition: background 0.2s;
+            cursor: pointer;
+        }
+
+        .app-card:hover {
+            background: #1E1E1E;
+        }
+
+        .app-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            flex-shrink: 0;
+        }
+
+        /* --- Interactive Install Button --- */
+        .install-btn {
+            background: transparent;
+            color: var(--accent);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 4px 16px;
+            border-radius: 99px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 8px;
+            display: inline-block;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .install-btn:hover {
+            background: rgba(61, 220, 132, 0.1);
+            border-color: var(--accent);
+        }
+
+        .install-btn.downloading {
+            pointer-events: none;
+            border-color: transparent;
+            background: #333;
+            color: transparent;
+        }
+
+        .install-btn.downloading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--accent);
+            animation: progressFill 1.5s ease-in-out forwards;
+        }
+
+        .install-btn.installed {
+            background: var(--accent);
+            color: #000;
+            border-color: var(--accent);
+        }
+
+        @keyframes progressFill {
+            to {
+                width: 100%;
+            }
+        }
+
+        .detail-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .chip {
+            font-size: 10px;
+            background: #333;
+            padding: 4px 8px;
+            border-radius: 6px;
+            color: #ccc;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 24px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(to bottom, var(--accent), transparent);
+        }
+
+        /* --- Spotlight Card Effect --- */
+        .spotlight-card {
+            position: relative;
+            background: rgba(30, 30, 30, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .spotlight-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), var(--accent-glow), transparent 40%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .spotlight-card:hover::before {
+            opacity: 1;
+        }
+
+        .spotlight-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .card-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* --- Toast Notifications --- */
+        #toast-container {
+            position: fixed;
+            bottom: 100px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            pointer-events: none;
+        }
+
+        .android-toast {
+            background: rgba(50, 50, 50, 0.95);
+            color: white;
+            padding: 10px 24px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            animation: toastFadeIn 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes toastFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes toastFadeOut {
+            to {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* --- Floating Action Button (FAB) --- */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: #000;
+            box-shadow: 0 4px 20px var(--accent-glow);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 9999;
+            /* Increased Z-Index for Visibility */
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) 1s forwards;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        @keyframes popIn {
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .fab:hover {
+            transform: translateY(-5px) rotate(90deg) !important;
+            box-shadow: 0 8px 30px var(--accent-glow);
+        }
+
+        /* --- Debug Overlay (Hidden by default) --- */
+        .debug-overlay {
+            display: none;
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 10px;
+            color: var(--accent);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 4px 8px;
+            border: 1px solid var(--accent);
+            border-radius: 4px;
+        }
+
+        .debug-line {
+            display: block;
+            opacity: 0.8;
+        }
+    </style>
+</head>
+
+<body class="selection:bg-green-500 selection:text-black">
+
+    <!-- Interactive Background -->
+    <canvas id="canvas-bg"></canvas>
+    <div id="code-container"></div>
+    <div id="toast-container"></div>
+
+    <!-- FAB -->
+    <a href="mailto:ranuluhar@gmail.com"
+        onclick="if(window.trackEvent) trackEvent('fab_email_click', { version: 'v5' })" class="fab"
+        title="Compose Email">
+        <i class="fas fa-pen"></i>
+    </a>
+
+    <div class="max-w-7xl mx-auto px-6 py-12 md:py-20 relative z-10">
+
+        <div class="grid lg:grid-cols-2 gap-16 items-start">
+
+            <!-- LEFT COLUMN: Content -->
+            <div class="space-y-16">
+
+                <!-- Hero Section -->
+                <section data-aos="fade-up" data-aos-duration="1000">
+                    <div class="flex items-center gap-4 mb-6">
+                        <!-- Custom Animated SVG Robot with Eye Tracking -->
+                        <div class="android-mascot group" id="androidMascot" onclick="triggerEasterEgg()">
+                            <!-- The Hint Badge -->
+                            <div class="click-hint" id="mascotHint">Click Me!</div>
+
+                            <svg viewBox="0 0 100 100" fill="var(--accent)" xmlns="http://www.w3.org/2000/svg">
+                                <!-- Antennas -->
+                                <line x1="28" y1="28" x2="38" y2="40" stroke="var(--accent)" stroke-width="4"
+                                    stroke-linecap="round" class="antenna-left" />
+                                <line x1="72" y1="28" x2="62" y2="40" stroke="var(--accent)" stroke-width="4"
+                                    stroke-linecap="round" class="antenna-right" />
+                                <!-- Head -->
+                                <path d="M25 42 A25 25 0 0 1 75 42" />
+                                <!-- Eyes -->
+                                <circle id="eye-left" cx="38" cy="35" r="2.5" fill="black" class="eye-ball" />
+                                <circle id="eye-right" cx="62" cy="35" r="2.5" fill="black" class="eye-ball" />
+                                <!-- Body -->
+                                <rect x="25" y="45" width="50" height="45" rx="5" ry="5" />
+                                <!-- Arms -->
+                                <rect x="10" y="45" width="12" height="35" rx="5" ry="5" class="left-arm" />
+                                <rect x="78" y="45" width="12" height="35" rx="5" ry="5" class="right-arm" />
+                            </svg>
+                        </div>
+
+                        <span
+                            class="px-3 py-1 rounded-full border border-gray-700 bg-gray-900/50 text-[var(--accent)] text-xs font-bold tracking-widest uppercase flex items-center gap-2 backdrop-blur-md">
+                            <i class="fab fa-android"></i>
+                            <!-- Editable Role Title -->
+                            <span contenteditable="true" spellcheck="false">Android SDE II</span>
+                        </span>
+                    </div>
+
+                    <!-- Editable Main Heading -->
+                    <h1 class="text-5xl md:text-7xl font-bold leading-tight mb-6">
+                        <span class="block text-gray-400 text-3xl mb-2 font-normal">Hi, I'm</span>
+                        <span contenteditable="true" spellcheck="false"
+                            class="border-b-2 border-transparent hover:border-[var(--accent)] transition-colors">Ranjeet
+                            Chouhan</span>.
+                        <br>
+                        <span style="color: var(--accent);">Silky Smooth</span> Apps.
+                    </h1>
+
+                    <p class="text-gray-400 text-lg leading-relaxed max-w-lg mb-8" contenteditable="true">
+                        I engineer high-performance Android applications using <strong>Jetpack Compose</strong>,
+                        <strong>Clean Architecture</strong>, and a pixel-perfect obsession.
+                    </p>
+
+                    <!-- Tech Stack Chips -->
+                    <div class="flex flex-wrap gap-3">
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a]/80 backdrop-blur rounded-lg text-sm text-gray-300 border border-white/5 hover:border-[var(--accent)] transition-colors cursor-default hover:text-[var(--accent)] hover:scale-105 transform duration-200">Kotlin</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a]/80 backdrop-blur rounded-lg text-sm text-gray-300 border border-white/5 hover:border-[var(--accent)] transition-colors cursor-default hover:text-[var(--accent)] hover:scale-105 transform duration-200">Jetpack
+                            Compose</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a]/80 backdrop-blur rounded-lg text-sm text-gray-300 border border-white/5 hover:border-[var(--accent)] transition-colors cursor-default hover:text-[var(--accent)] hover:scale-105 transform duration-200">Hilt</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a]/80 backdrop-blur rounded-lg text-sm text-gray-300 border border-white/5 hover:border-[var(--accent)] transition-colors cursor-default hover:text-[var(--accent)] hover:scale-105 transform duration-200">MQTT</span>
+                        <span
+                            class="px-4 py-2 bg-[#1a1a1a]/80 backdrop-blur rounded-lg text-sm text-gray-300 border border-white/5 hover:border-[var(--accent)] transition-colors cursor-default hover:text-[var(--accent)] hover:scale-105 transform duration-200">BLE</span>
+                    </div>
+                </section>
+
+                <!-- Experience Timeline -->
+                <section data-aos="fade-up" data-aos-delay="200">
+                    <h2 class="text-2xl font-bold mb-8 flex items-center gap-3">
+                        <span class="w-8 h-1 bg-[var(--accent)] rounded-full shadow-[0_0_10px_var(--accent)]"></span>
+                        Experience
+                    </h2>
+
+                    <div class="relative pl-12 space-y-12">
+                        <div class="timeline-line"></div>
+
+                        <!-- Porter -->
+                        <div class="relative group spotlight-card p-6 rounded-2xl" onmousemove="handleMouseMove(event)">
+                            <div
+                                class="absolute -left-[55px] top-7 w-4 h-4 rounded-full bg-[var(--accent)] border-4 border-black group-hover:scale-125 transition-transform z-10 shadow-[0_0_15px_var(--accent)]">
+                            </div>
+                            <div class="card-content">
+                                <h3 class="text-xl font-bold text-white">SDE II @ Porter</h3>
+                                <p class="text-sm text-[var(--accent)] font-mono mb-2">2025 - Present</p>
+                                <p class="text-gray-400 text-sm">
+                                    Owning notification delivery (MQTT) & building "Accept Order" flows with Compose &
+                                    RIBs.
+                                </p>
+                            </div>
+                            <!-- Debug Overlay (Hidden Easter Egg) -->
+                            <div class="debug-overlay">
+                                <span class="debug-line">FPS: 60</span>
+                                <span class="debug-line">MEM: 124MB</span>
+                                <span class="debug-line">threads: 4</span>
+                            </div>
+                        </div>
+
+                        <!-- Sunday Labs -->
+                        <div class="relative group spotlight-card p-6 rounded-2xl" onmousemove="handleMouseMove(event)">
+                            <div
+                                class="absolute -left-[55px] top-7 w-4 h-4 rounded-full bg-gray-600 border-4 border-black group-hover:scale-125 transition-transform z-10">
+                            </div>
+                            <div class="card-content">
+                                <h3 class="text-xl font-bold text-white">SDE II @ Sunday Labs</h3>
+                                <p class="text-sm text-gray-500 font-mono mb-2">2024 - 2025</p>
+                                <p class="text-gray-400 text-sm">
+                                    Increased notification delivery to 92%. Built Android Studio plugins for team
+                                    productivity.
+                                </p>
+                            </div>
+                            <div class="debug-overlay">
+                                <span class="debug-line">FPS: 59</span>
+                                <span class="debug-line">MEM: 98MB</span>
+                            </div>
+                        </div>
+
+                        <!-- Fourth Frontier -->
+                        <div class="relative group spotlight-card p-6 rounded-2xl" onmousemove="handleMouseMove(event)">
+                            <div
+                                class="absolute -left-[55px] top-7 w-4 h-4 rounded-full bg-gray-600 border-4 border-black group-hover:scale-125 transition-transform z-10">
+                            </div>
+                            <div class="card-content">
+                                <h3 class="text-xl font-bold text-white">Android Dev @ Fourth Frontier</h3>
+                                <p class="text-sm text-gray-500 font-mono mb-2">2023 - 2024</p>
+                                <p class="text-gray-400 text-sm">
+                                    Built "Frontier Pulse" from scratch. Deep dive into BLE communication and Clean
+                                    Architecture.
+                                </p>
+                            </div>
+                            <div class="debug-overlay">
+                                <span class="debug-line">FPS: 60</span>
+                                <span class="debug-line">BLE: ON</span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Education & Awards -->
+                <section data-aos="fade-up" data-aos-delay="300" class="grid md:grid-cols-2 gap-8">
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-graduation-cap text-gray-500"></i> Education
+                        </h2>
+                        <div
+                            class="bg-[#1a1a1a]/60 backdrop-blur p-4 rounded-xl border border-white/5 hover:border-[var(--accent)] transition-colors">
+                            <h3 class="font-bold">Rajasthan Technical University</h3>
+                            <p class="text-sm text-gray-400">B.Tech Computer Science</p>
+                            <p class="text-xs text-gray-500 mt-1">2015 - 2019</p>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold mb-4 flex items-center gap-2">
+                            <i class="fas fa-trophy text-yellow-500"></i> Honors
+                        </h2>
+                        <ul class="space-y-3">
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-[var(--accent)] mt-1"></i>
+                                <span>Mentor, UNESCO-India-Africa Hackathon '22</span>
+                            </li>
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-[var(--accent)] mt-1"></i>
+                                <span>Chairperson, ACM Student Chapter</span>
+                            </li>
+                            <li class="flex gap-3 text-sm text-gray-300">
+                                <i class="fas fa-check text-[var(--accent)] mt-1"></i>
+                                <span>Smart India Hackathon Participant</span>
+                            </li>
+                        </ul>
+                    </div>
+                </section>
+
+            </div>
+
+            <!-- RIGHT COLUMN: Sticky Device Frame -->
+            <div class="hidden lg:block sticky top-10 h-screen flex items-center justify-center device-container">
+
+                <!-- Phone Frame -->
+                <div class="phone-mockup" data-aos="fade-left" data-aos-duration="1200">
+
+                    <!-- Screen Container -->
+                    <div class="screen">
+
+                        <!-- Simulated Status Bar -->
+                        <div
+                            class="absolute top-0 w-full flex justify-between px-6 py-2 text-[10px] text-gray-400 font-medium z-50">
+                            <span>12:30</span>
+                            <div class="flex gap-1">
+                                <i class="fas fa-wifi"></i>
+                                <i class="fas fa-battery-full"></i>
+                            </div>
+                        </div>
+
+                        <!-- PAGE 1: HOME (App Store List) -->
+                        <div class="page page-home" id="pageHome">
+                            <!-- Play Store Header -->
+                            <div class="px-5 mb-4 pt-4">
+                                <div
+                                    class="bg-[#2A2A2A] rounded-full px-4 py-2 flex items-center gap-3 text-gray-400 text-sm shadow-md">
+                                    <i class="fas fa-search"></i>
+                                    <span>Search apps...</span>
+                                    <div
+                                        class="ml-auto w-6 h-6 rounded-full bg-purple-500 text-white flex items-center justify-center text-xs font-bold">
+                                        R</div>
+                                </div>
+                            </div>
+
+                            <!-- Featured Section -->
+                            <div class="px-5 mb-6">
+                                <h4 class="text-white font-semibold mb-3 text-sm">My Projects</h4>
+
+                                <!-- App Card: Frontier -->
+                                <div class="app-card" onclick="openApp('frontier')">
+                                    <div class="app-icon bg-gradient-to-br from-red-500 to-orange-600">
+                                        <i class="fas fa-heartbeat text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Frontier X Link</div>
+                                        <div class="text-xs text-gray-500">Health • 4.8 <i
+                                                class="fas fa-star text-[10px]"></i></div>
+                                        <button class="install-btn"
+                                            onclick="event.stopPropagation(); simulateInstall(this, 'Frontier X')">Install</button>
+                                    </div>
+                                </div>
+
+                                <!-- App Card: Gymcatch -->
+                                <div class="app-card" onclick="openApp('gymcatch')">
+                                    <div class="app-icon bg-gradient-to-br from-blue-500 to-cyan-500">
+                                        <i class="fas fa-dumbbell text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Gymcatch</div>
+                                        <div class="text-xs text-gray-500">Booking • 4.6 <i
+                                                class="fas fa-star text-[10px]"></i></div>
+                                        <button class="install-btn"
+                                            onclick="event.stopPropagation(); simulateInstall(this, 'Gymcatch')">Update</button>
+                                    </div>
+                                </div>
+
+                                <!-- App Card: Car Rescue -->
+                                <div class="app-card" onclick="openApp('carrescue')">
+                                    <div class="app-icon bg-gradient-to-br from-yellow-500 to-amber-600">
+                                        <i class="fas fa-car-crash text-white"></i>
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <div class="text-sm font-medium truncate text-gray-200">Car Rescue</div>
+                                        <div class="text-xs text-gray-500">Navigation • Geofencing</div>
+                                        <button class="install-btn"
+                                            onclick="event.stopPropagation(); simulateInstall(this, 'Car Rescue')">Install</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Work Project (Porter) -->
+                            <div class="px-5 mb-6" onclick="openApp('porter')">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="text-white font-semibold text-sm">Current Role</h4>
+                                    <span
+                                        class="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded">Installed</span>
+                                </div>
+                                <div
+                                    class="bg-[#1E1E1E] rounded-xl p-4 shadow-lg cursor-pointer hover:bg-[#252525] transition-colors">
+                                    <div
+                                        class="w-full h-24 bg-gradient-to-r from-purple-600 to-indigo-600 rounded-lg mb-3 flex items-center justify-center">
+                                        <i class="fas fa-truck text-3xl text-white/80"></i>
+                                    </div>
+                                    <div class="text-sm font-medium text-gray-200">Porter Driver App</div>
+                                    <div class="text-xs text-gray-500 mt-1 mb-3">
+                                        Enterprise Logistics app. Powered by MQTT & Compose.
+                                    </div>
+                                    <div class="flex gap-2">
+                                        <button
+                                            class="flex-1 bg-[var(--accent)] text-black text-xs font-bold py-2 rounded-full">Open</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGE 2: APP DETAIL (Dynamic Content) -->
+                        <div class="page page-detail" id="pageDetail">
+                            <div
+                                class="sticky top-0 bg-[#131313]/90 backdrop-blur z-10 px-4 py-3 flex items-center gap-4 border-b border-white/5">
+                                <button onclick="closeApp()" class="text-white hover:text-green-400"><i
+                                        class="fas fa-arrow-left"></i></button>
+                                <span class="text-sm font-bold">App Details</span>
+                            </div>
+
+                            <div class="p-5">
+                                <!-- Dynamic Header -->
+                                <div class="flex gap-4 mb-6">
+                                    <div id="detailIcon"
+                                        class="w-20 h-20 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg">
+                                    </div>
+                                    <div class="flex-1">
+                                        <h2 id="detailTitle" class="text-xl font-bold leading-tight"></h2>
+                                        <p id="detailSubtitle" class="text-xs text-green-400 mt-1"></p>
+                                        <div class="flex gap-2 mt-3">
+                                            <button
+                                                class="bg-[var(--accent)] text-black px-4 py-1 rounded-full text-xs font-bold flex-1"
+                                                onclick="showToast('Opening App...')">Open</button>
+                                            <button class="bg-[#333] px-3 py-1 rounded-full text-xs"
+                                                onclick="showToast('Link Copied')"><i class="fas fa-share"></i></button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Tech Stats -->
+                                <div class="grid grid-cols-3 gap-2 mb-6 text-center">
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Downloads</p>
+                                        <p class="font-bold text-sm">1M+</p>
+                                    </div>
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Rating</p>
+                                        <p class="font-bold text-sm">4.8 <i class="fas fa-star text-[8px]"></i></p>
+                                    </div>
+                                    <div class="bg-[#1E1E1E] p-2 rounded-lg">
+                                        <p class="text-[10px] text-gray-500">Size</p>
+                                        <p class="font-bold text-sm">24 MB</p>
+                                    </div>
+                                </div>
+
+                                <!-- Dynamic Description -->
+                                <h3 class="font-bold text-sm mb-2">About this app</h3>
+                                <p id="detailDesc" class="text-xs text-gray-400 leading-relaxed mb-6"></p>
+
+                                <!-- Tech Stack -->
+                                <h3 class="font-bold text-sm mb-3">Tech Stack & Libraries</h3>
+                                <div id="detailTags" class="flex flex-wrap gap-2"></div>
+
+                            </div>
+                        </div>
+
+                        <!-- Footer Navigation -->
+                        <div
+                            class="absolute bottom-0 w-full bg-[#131313] border-t border-white/5 py-3 px-6 flex justify-between items-center z-50">
+                            <div class="flex flex-col items-center gap-1 text-[var(--accent)]">
+                                <i class="fas fa-gamepad text-lg"></i>
+                                <span class="text-[10px]">Games</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1 text-gray-500">
+                                <i class="fas fa-layer-group text-lg"></i>
+                                <span class="text-[10px]">Apps</span>
+                            </div>
+                            <div class="flex flex-col items-center gap-1 text-gray-500">
+                                <i class="fas fa-search text-lg"></i>
+                                <span class="text-[10px]">Search</span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- Floating Badge -->
+                <div
+                    class="absolute -right-10 bottom-20 bg-[#1a1a1a] p-4 rounded-xl border border-white/10 shadow-2xl animate-bounce hidden xl:block">
+                    <div class="flex items-center gap-2 mb-1">
+                        <i class="fas fa-check-circle text-blue-500"></i>
+                        <span class="text-xs text-gray-400">Verified Developer</span>
+                    </div>
+                    <p class="text-xl font-bold text-white">4+ Years Exp.</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize AOS
+        AOS.init({ once: true, offset: 50, duration: 800 });
+
+        // --- BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0 || this.x > width) this.vx *= -1;
+                if (this.y < 0 || this.y > height) this.vy *= -1;
+            }
+            draw() {
+                // Adjust color based on theme
+                const isDev = document.body.classList.contains('dev-mode');
+                ctx.fillStyle = isDev ? 'rgba(255, 0, 255, 0.3)' : 'rgba(61, 220, 132, 0.3)';
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 40; i++) particles.push(new Particle());
+        }
+        initParticles();
+
+        function animateBg() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Adjust line color based on theme
+            const isDev = document.body.classList.contains('dev-mode');
+            ctx.strokeStyle = isDev ? 'rgba(255, 0, 255, 0.1)' : 'rgba(61, 220, 132, 0.05)';
+
+            ctx.lineWidth = 1;
+            for (let i = 0; i < particles.length; i++) {
+                for (let j = i + 1; j < particles.length; j++) {
+                    const dx = particles[i].x - particles[j].x;
+                    const dy = particles[i].y - particles[j].y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    if (dist < 200) {
+                        ctx.beginPath();
+                        ctx.moveTo(particles[i].x, particles[i].y);
+                        ctx.lineTo(particles[j].x, particles[j].y);
+                        ctx.stroke();
+                    }
+                }
+                particles[i].update();
+                particles[i].draw();
+            }
+            requestAnimationFrame(animateBg);
+        }
+        animateBg();
+
+        // --- FLOATING CODE SNIPPETS ---
+        const codeWords = ['fun', 'val', 'var', 'Compose', 'Hilt', 'XML', 'Flow', 'LiveData', 'Retrofit', 'Room', 'class', 'interface', 'object', 'when', 'if', 'else', 'try', 'catch'];
+        const container = document.getElementById('code-container');
+
+        function createCodeParticle() {
+            const el = document.createElement('div');
+            el.classList.add('code-particle');
+            el.innerText = codeWords[Math.floor(Math.random() * codeWords.length)];
+            el.style.left = Math.random() * 100 + 'vw';
+            el.style.animationDuration = (Math.random() * 10 + 10) + 's';
+            el.style.fontSize = (Math.random() * 10 + 10) + 'px';
+            container.appendChild(el);
+            setTimeout(() => { el.remove() }, 20000);
+        }
+        setInterval(createCodeParticle, 2000);
+
+        // --- SPOTLIGHT & EYE TRACKING ---
+        document.addEventListener('mousemove', (e) => {
+            // Eye tracking
+            const leftEye = document.getElementById('eye-left');
+            const rightEye = document.getElementById('eye-right');
+
+            // Limit movement to small range
+            const moveX = (e.clientX / window.innerWidth - 0.5) * 6;
+            const moveY = (e.clientY / window.innerHeight - 0.5) * 6;
+
+            if (leftEye && rightEye) {
+                leftEye.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+                rightEye.setAttribute('transform', `translate(${moveX}, ${moveY})`);
+            }
+        });
+
+        function handleMouseMove(e) {
+            const card = e.currentTarget;
+            const rect = card.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            card.style.setProperty('--mouse-x', `${x}px`);
+            card.style.setProperty('--mouse-y', `${y}px`);
+        }
+
+        // --- EASTER EGG (DEVELOPER MODE) ---
+        let clicks = 0;
+        let devModeActive = false;
+
+        function triggerEasterEgg() {
+            if (devModeActive) {
+                showToast("Developer Mode is already active!");
+                return;
+            }
+
+            clicks++;
+
+            // Visual feedback on click handled by CSS :active
+
+            if (clicks >= 3 && clicks < 5) {
+                const steps = 5 - clicks;
+                showToast(`You are ${steps} step${steps > 1 ? 's' : ''} away from being a developer.`);
+            } else if (clicks === 5) {
+                enableDeveloperMode();
+            }
+        }
+
+        function enableDeveloperMode() {
+            devModeActive = true;
+            document.body.classList.add('dev-mode');
+            showToast("You are now a developer! 🚀");
+
+            // Update Hint
+            document.getElementById('mascotHint').innerText = "Dev Mode ON";
+
+            // Change text of FAB or others to indicate mode
+            document.querySelector('.fab').style.backgroundColor = '#FF00FF';
+        }
+
+        // --- TOAST NOTIFICATIONS ---
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'android-toast';
+            toast.innerText = msg;
+            document.getElementById('toast-container').appendChild(toast);
+
+            // Remove after 3s
+            setTimeout(() => {
+                toast.style.animation = 'toastFadeOut 0.3s forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // --- INSTALL SIMULATION ---
+        function simulateInstall(btn, appName) {
+            if (btn.classList.contains('downloading') || btn.classList.contains('installed')) return;
+
+            btn.classList.add('downloading');
+            btn.innerText = "";
+            showToast(`Downloading ${appName}...`);
+
+            setTimeout(() => {
+                btn.classList.remove('downloading');
+                btn.classList.add('installed');
+                btn.innerText = "Open";
+                showToast(`${appName} Installed`);
+            }, 1500);
+        }
+
+        // --- APP DATA ---
+        const apps = {
+            frontier: {
+                title: "Frontier X Link",
+                subtitle: "Fourth Frontier Technologies",
+                desc: "A revolutionary health monitoring app connecting to the Frontier X device via BLE. Features real-time ECG streaming, cardiac strain analysis, and AWS Cognito integration for secure data handling.",
+                iconClass: "bg-gradient-to-br from-red-500 to-orange-600",
+                iconHtml: '<i class="fas fa-heartbeat text-white"></i>',
+                tags: ["Kotlin", "Bluetooth LE", "Clean Arch", "Hilt", "AWS Cognito", "MPAndroidChart"]
+            },
+            gymcatch: {
+                title: "Gymcatch",
+                subtitle: "Fitness Booking System",
+                desc: "Comprehensive fitness management app. Users can find classes, book sessions, and sync schedules. Built with a robust offline-first architecture using Room Database.",
+                iconClass: "bg-gradient-to-br from-blue-500 to-cyan-500",
+                iconHtml: '<i class="fas fa-dumbbell text-white"></i>',
+                tags: ["MVVM", "Room DB", "Coroutines", "Mockk", "Calendar API"]
+            },
+            carrescue: {
+                title: "Car Rescue",
+                subtitle: "Emergency Assistance",
+                desc: "Geo-location based emergency app. Connects users within a 50km radius for help. Features real-time navigation using Google Maps SDK and in-app chat via Firebase.",
+                iconClass: "bg-gradient-to-br from-yellow-500 to-amber-600",
+                iconHtml: '<i class="fas fa-car-crash text-white"></i>',
+                tags: ["Google Maps SDK", "Firebase Realtime DB", "Geofencing", "Retrofit"]
+            },
+            porter: {
+                title: "Porter Driver App",
+                subtitle: "Enterprise Logistics",
+                desc: "The backbone of Porter's logistics network. Handles high-frequency order dispatching using MQTT. Recently refactored to use Jetpack Compose and RIBs architecture for modularity.",
+                iconClass: "bg-gradient-to-r from-purple-600 to-indigo-600",
+                iconHtml: '<i class="fas fa-truck text-white"></i>',
+                tags: ["Jetpack Compose", "MQTT", "RIBs Architecture", "Observability", "Modularization"]
+            }
+        };
+
+        function openApp(appId) {
+            const app = apps[appId];
+            if (!app) return;
+            document.getElementById('detailTitle').innerText = app.title;
+            document.getElementById('detailSubtitle').innerText = app.subtitle;
+            document.getElementById('detailDesc').innerText = app.desc;
+            const iconContainer = document.getElementById('detailIcon');
+            iconContainer.className = `w-20 h-20 rounded-2xl flex items-center justify-center text-3xl text-white shadow-lg ${app.iconClass}`;
+            iconContainer.innerHTML = app.iconHtml;
+            const tagsContainer = document.getElementById('detailTags');
+            tagsContainer.innerHTML = app.tags.map(tag => `<span class="chip">${tag}</span>`).join('');
+            document.getElementById('pageDetail').classList.add('active');
+        }
+
+        function closeApp() {
+            document.getElementById('pageDetail').classList.remove('active');
+        }
+    </script>
+    <script src="../switcher.js"></script>
+</body>
+
+</html>

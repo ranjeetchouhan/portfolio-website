@@ -6,10 +6,11 @@
 (function () {
     const variants = [
         { id: 'v1', name: 'Modern Dark', desc: 'Material You Inspiration', icon: 'fa-terminal', color: 'v-modern', path: 'index.html' },
-        { id: 'v1', name: 'Clean Minimal', desc: 'Sleek & Professional', icon: 'fa-user-tie', color: 'v-clean', path: 'index_1.html' },
-        { id: 'v2', name: 'Bento Grid', desc: 'Interactive Grid Layout', icon: 'fa-th-large', color: 'v-bento', path: 'index_2.html' },
-        { id: 'v3', name: 'Play Store V3', desc: 'App Store Aesthetic', icon: 'fa-google-play', color: 'v-playstore', path: 'index_3.html' },
-        { id: 'v4', name: 'Play Store PLUS', desc: 'Interactive Experience', icon: 'fa-rocket', color: 'v-playstore-plus', path: 'v4/index.html' }
+        { id: 'v1-clean', name: 'Clean Minimal', desc: 'Sleek & Professional', icon: 'fa-user-tie', color: 'v-clean', path: 'v1/index.html' },
+        { id: 'v2', name: 'Bento Grid', desc: 'Interactive Grid Layout', icon: 'fa-th-large', color: 'v-bento', path: 'v2/index.html' },
+        { id: 'v3', name: 'Play Store V3', desc: 'App Store Aesthetic', icon: 'fa-google-play', color: 'v-playstore', path: 'v3/index.html' },
+        { id: 'v4', name: 'Play Store PLUS', desc: 'Advanced Interaction', icon: 'fa-rocket', color: 'v-playstore-plus', path: 'v4/index.html' },
+        { id: 'v5', name: 'Play Store Interactive', desc: 'Developer Mode & Eggs', icon: 'fa-code', color: 'v-playstore-plus', path: 'v5/index.html', accent: '#FF00FF' }
     ];
 
     function initSwitcher() {
@@ -23,9 +24,15 @@
         const menu = document.createElement('div');
         menu.id = 'portfolio-switcher-menu';
 
-        const currentPath = window.location.pathname.split('/').pop() || 'index.html';
-        const isV4 = window.location.pathname.includes('/v4/');
-        const effectivePath = isV4 ? 'v4/index.html' : currentPath;
+        const pathParts = window.location.pathname.split('/');
+        const fileName = pathParts.pop() || 'index.html';
+        const dirName = pathParts.pop();
+
+        // Effective path for matching
+        let effectivePath = fileName;
+        if (dirName && (dirName.startsWith('v') && !isNaN(dirName.substring(1)))) {
+            effectivePath = dirName + '/' + fileName;
+        }
 
         const menuHtml = `
             <div class="switcher-header">
@@ -35,19 +42,33 @@
             <div class="variant-list">
                 ${variants.map(v => {
             const isCurrent = v.path === effectivePath || (v.path === 'index.html' && effectivePath === '');
-            const adjustedPath = isV4 ? '../' + v.path : v.path;
-            // If we are in v4, normal links need ../, if we are in root, v4 needs v4/
-            let finalPath = v.path;
-            if (isV4) {
-                finalPath = v.path.includes('v4/') ? 'index.html' : '../' + v.path;
+
+            // Path adjustment logic
+            let finalPath = '';
+            const inSubDir = dirName && (dirName.startsWith('v') && !isNaN(dirName.substring(1)));
+
+            if (inSubDir) {
+                // We are in v1/, v2/, etc.
+                if (v.path === 'index.html') {
+                    finalPath = '../index.html';
+                } else if (v.path.includes('/')) {
+                    // Target is in another subdir (e.g., v2/index.html)
+                    const targetDir = v.path.split('/')[0];
+                    if (targetDir === dirName) {
+                        finalPath = 'index.html';
+                    } else {
+                        finalPath = '../' + v.path;
+                    }
+                }
             } else {
                 // We are in root
                 finalPath = v.path;
             }
 
             return `
-                    <a href="${finalPath}" class="variant-item ${isCurrent ? 'current' : ''}">
-                        <div class="variant-icon ${v.color}">
+                    <a href="${finalPath}" class="variant-item ${isCurrent ? 'current' : ''}" 
+                       onclick="if(window.trackEvent) trackEvent('switch_variant', { variant_id: '${v.id}', variant_name: '${v.name}' })">
+                        <div class="variant-icon ${v.color}" style="${v.accent ? `background: ${v.accent}` : ''}">
                             <i class="fas ${v.icon}"></i>
                         </div>
                         <div class="variant-info">

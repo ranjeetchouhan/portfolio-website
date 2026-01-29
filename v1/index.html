@@ -10,6 +10,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="../switcher.css">
+    <script src="../analytics.js"></script>
 
     <style>
         :root {
@@ -120,6 +122,7 @@
             <a href="#projects" class="hover:text-white transition-colors">Apps</a>
         </div>
         <a href="mailto:ranuluhar@gmail.com"
+            onclick="if(window.trackEvent) trackEvent('hire_me_click', { version: 'v1' })"
             class="hidden md:block bg-[#3DDC84] text-black px-4 py-1.5 rounded-full text-sm font-bold hover:bg-white transition-colors">
             Hire Me
         </a>
@@ -223,7 +226,8 @@
                     <ul class="list-disc ml-5 text-gray-400 space-y-2 text-sm">
                         <li>Core member of Product Platform team; owning notification delivery & MQTT architecture.</li>
                         <li>Built "Accept Order Screen" from scratch using <strong class="text-white">Compose</strong> &
-                            <strong class="text-white">RIBs</strong>.</li>
+                            <strong class="text-white">RIBs</strong>.
+                        </li>
                         <li>Implemented observability for trip creation flows.</li>
                     </ul>
                 </div>
@@ -408,6 +412,7 @@
             });
         });
     </script>
+    <script src="../switcher.js"></script>
 </body>
 
 </html>
